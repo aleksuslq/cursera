@@ -1,16 +1,18 @@
+import piplite
+await piplite.install('seaborn')
 import pandas as pd
-import requests
+from pyodide.http import pyfetch
 
 # Функция для загрузки файла
-def download(url, filename):
-    response = requests.get(url)
-    if response.status_code == 200:
+async def download(url, filename):
+    response = await pyfetch(url)
+    if response.status == 200:
         with open(filename, "wb") as f:
-            f.write(response.content)
+            f.write(await response.bytes())
 
 # Загрузка данных
 filepath = 'https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DA0101EN-SkillsNetwork/labs/FinalModule_Coursera/data/kc_house_data_NaN.csv'
-download(filepath, "housing.csv")
+await download(filepath, "housing.csv")
 
 # Чтение CSV-файла
 file_name = "housing.csv"
